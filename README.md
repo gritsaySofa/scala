@@ -59,22 +59,30 @@ val flightsDF = Seq(
 
 // 1. Номера всех бортов, вылетевших из Санкт-Петербурга
 println("Номера бортов из Санкт-Петербурга:")
+
 flightsDF.filter($"from" === "Санкт-Петербург").select("num").as[Int].collect().foreach(println)
 
 // 2. Информация о рейсах со расстоянием > среднего
 val avgDist = flightsDF.agg(avg($"dist")).as[Double].first()
+
 println(f"\nСреднее расстояние = $avgDist%.2f")
+
 println("Рейсы с расстоянием > среднего:")
+
 flightsDF.filter($"dist" > avgDist).show(false)
 
 // 3. Замена номера борта на 777 для рейса Москва → Уфа
 
 val updatedDF = flightsDF.withColumn("num",when($"from" === "Москва" && $"to" === "Уфа", lit(777)).otherwise($"num"))
+
 println("\nОбновлённый рейс Москва → Уфа:")
+
 updatedDF.filter($"from" === "Москва" && $"to" === "Уфа").show(false)
 
 // 4. Подтаблица: только столбцы (Город прибытия, Номер борта)
+
 println("\nПодтаблица (to, num):")
+
 flightsDF.select($"to", $"num").show(false)
 
 
@@ -84,30 +92,39 @@ val data = sc.textFile("info.txt")
 
 // 2.1.1 Всего строк
 val total = data.count()
+
 // 2.1.2 Пустых строк
 val empty = data.filter(_.trim.isEmpty).count()
+
 // 2.1.3 Удалить пустые
 val nonEmpty = data.filter(_.trim.nonEmpty)
+
 // 2.1.4 Вхождения заданного слова
 val word = "data"
+
 val occurrences = data.flatMap(_.split("\\W+")).filter(_ == word).count()
 
 println(f"\nВсего = $total%d, пустых = $empty%d, вхождений '$word' = $occurrences%d")
 
 // 2.2 Два списка ключ–значение
+
 val rdd1 = sc.parallelize(Seq(("key1",1), ("key2",2), ("key3",3)))
 val rdd2 = sc.parallelize(Seq(("key2",4), ("key3",5), ("key4",6), ("key5",7), ("key6",8)))
 
 // 2.2.1 Объединение:
 println("\nОбъединение:")
+
 val merged = rdd1.union(rdd2)
+
 merged.collect().foreach(println)
 
 
 
 // 2.2.2 Агрегация:
 println("\nАгрегация:")
+
 val aggregated = merged.reduceByKey(_ + _)
+
 aggregated.collect().foreach(println)
 
 
