@@ -59,36 +59,22 @@ val flightsDF = Seq(
 
 // 1. Номера всех бортов, вылетевших из Санкт-Петербурга
 println("Номера бортов из Санкт-Петербурга:")
-flightsDF
-  .filter($"from" === "Санкт-Петербург")
-  .select("num")
-  .as[Int]
-  .collect()
-  .foreach(println)
+flightsDF.filter($"from" === "Санкт-Петербург").select("num").as[Int].collect().foreach(println)
 
 // 2. Информация о рейсах со расстоянием > среднего
 val avgDist = flightsDF.agg(avg($"dist")).as[Double].first()
 println(f"\nСреднее расстояние = $avgDist%.2f")
 println("Рейсы с расстоянием > среднего:")
-flightsDF
-  .filter($"dist" > avgDist)
-  .show(false)
+flightsDF.filter($"dist" > avgDist).show(false)
 
 // 3. Замена номера борта на 777 для рейса Москва → Уфа
-val updatedDF = flightsDF.withColumn(
-  "num",
-  when($"from" === "Москва" && $"to" === "Уфа", lit(777)).otherwise($"num")
-)
+val updatedDF = flightsDF.withColumn("num",when($"from" === "Москва" && $"to" === "Уфа", lit(777)).otherwise($"num"))
 println("\nОбновлённый рейс Москва → Уфа:")
-updatedDF
-  .filter($"from" === "Москва" && $"to" === "Уфа")
-  .show(false)
+updatedDF.filter($"from" === "Москва" && $"to" === "Уфа").show(false)
 
 // 4. Подтаблица: только столбцы (Город прибытия, Номер борта)
 println("\nПодтаблица (to, num):")
-flightsDF
-  .select($"to", $"num")
-  .show(false)
+flightsDF.select($"to", $"num").show(false)
 
 
 
@@ -103,10 +89,7 @@ val empty = data.filter(_.trim.isEmpty).count()
 val nonEmpty = data.filter(_.trim.nonEmpty)
 // 2.1.4 Вхождения заданного слова
 val word = "data"
-val occurrences = data
-  .flatMap(_.split("\\W+"))
-  .filter(_ == word)
-  .count()
+val occurrences = data.flatMap(_.split("\\W+")).filter(_ == word).count()
 
 println(f"\nВсего = $total%d, пустых = $empty%d, вхождений '$word' = $occurrences%d")
 
