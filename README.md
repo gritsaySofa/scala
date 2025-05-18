@@ -68,6 +68,7 @@ println("Рейсы с расстоянием > среднего:")
 flightsDF.filter($"dist" > avgDist).show(false)
 
 // 3. Замена номера борта на 777 для рейса Москва → Уфа
+
 val updatedDF = flightsDF.withColumn("num",when($"from" === "Москва" && $"to" === "Уфа", lit(777)).otherwise($"num"))
 println("\nОбновлённый рейс Москва → Уфа:")
 updatedDF.filter($"from" === "Москва" && $"to" === "Уфа").show(false)
